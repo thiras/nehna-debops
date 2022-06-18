@@ -1,0 +1,84 @@
+nginx_flavor: "extras"
+
+nginx_http_extra_options:
+  fastcgi_cache_path /var/run/nginx-fastcgi-cache levels=1:2 keys_zone=NEHNA_ORG:100m inactive=60m;
+  fastcgi_cache_key "$scheme$request_method$host$request_uri";
+  fastcgi_cache_use_stale error timeout invalid_header http_500;
+  fastcgi_ignore_headers Cache-Control Expires Set-Cookie;
+
+nginx__upstreams:
+  - name: "nehna_upstream"
+    enabled: True
+    type: "php"
+    php_pool: "nehna_pool"
+
+nginx__servers:
+  - name: ["nehna.org", "www.nehna.org"]
+    acme: True
+    redirect_from: True
+    type: php
+    php_upstream: "nehna_upstream"
+    owner: "nehna"
+    options: |
+      client_max_body_size 8M;
+      set $skip_cache 0;
+
+      # POST requests and urls with a query string should always go to PHP
+      if ($request_method = POST) {
+          set $skip_cache 1;
+      }
+
+      if ($query_string != "") {
+          set $skip_cache 1;
+      }
+
+      # Don't cache uris containing the following segments
+      if ($request_uri ~* "/wp-admin/|/xmlrpc.php|wp-.*.php|/feed/|index.php|sitemap(_index)?.xml") {
+          set $skip_cache 1;
+      }
+
+      # Don't use the cache for logged in users or recent commenters
+      if ($http_cookie ~* "comment_author|wordpress_[a-f0-9]+|wp-postpass|wordpress_no_cache|wordpress_logged_in") {
+          set $skip_cache 1;
+      }
+    location:
+      "~ /purge(/.*)": 'fastcgi_cache_purge NEHNA_ORG "$scheme$request_method$host$1";'
+      "/": "try_files $uri $uri/ /index.php?$args;"
+      '~* \.(jpg|jpeg|gif|png)$': "expires 365d;"
+      '~* \.(pdf|css|html|js|swf)$': "expires 7d;"
+
+    php_options: |
+      # fastcgi_read_timeout 3600;
+      # fastcgi_buffers 16 16k;
+      # fastcgi_buffer_size 16k;
+      # fastcgi_cache NEHNA_ORG;
+      # fastcgi_cache_valid 200 301 302 60m;
+      # fastcgi_cache_use_stale error timeout updating invalid_header http_500 http_503;
+      # fastcgi_cache_lock on;
+      # fastcgi_cache_bypass $skip_cache;
+      # fastcgi_no_cache $skip_cache;
+      # add_header X-FastCGI-Cache $upstream_cache_status;
+
+    allow:
+      - "173.245.48.0/20"
+      - "103.21.244.0/22"
+      - "103.22.200.0/22"
+      - "103.31.4.0/22"
+      - "141.101.64.0/18"
+      - "108.162.192.0/18"
+      - "190.93.240.0/20"
+      - "188.114.96.0/20"
+      - "197.234.240.0/22"
+      - "198.41.128.0/17"
+      - "162.158.0.0/15"
+      - "172.64.0.0/13"
+      - "131.0.72.0/22"
+      - "104.16.0.0/13"
+      - "104.24.0.0/14"
+      - "2400:cb00::/32"
+      - "2606:4700::/32"
+      - "2803:f800::/32"
+      - "2405:b500::/32"
+      - "2405:8100::/32"
+      - "2a06:98c0::/29"
+      - "2c0f:f248::/32"

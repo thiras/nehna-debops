@@ -1,0 +1,6 @@
+users__host_accounts:
+  - name: "nehna"
+    group: "nehna"
+    shell: "/bin/nologin"
+    home: "/srv/www/nehna"
+    create_home: True

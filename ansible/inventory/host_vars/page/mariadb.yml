@@ -1,0 +1,6 @@
+mariadb__databases:
+  - name: "nehna_db"
+
+mariadb__users:
+  - user: "nehna_usr"
+    database: "nehna_db"

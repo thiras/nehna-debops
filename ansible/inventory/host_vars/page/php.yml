@@ -1,0 +1,16 @@
+php__host_packages: ["redis", "xml", "imagick", "zip"]
+
+php__ini_memory_limit: "512M"
+
+php__ini_max_execution_time: "300"
+
+php__ini_max_input_time: "600"
+
+php__host_pools:
+  - name: "nehna_pool"
+    user: "nehna"
+    group: "nehna"
+
+php__fpm_pm_max_children: "8"
+
+php__fpm_pm_start_servers: "2"

@@ -1,0 +1,3 @@
+swapfile__files:
+  - path: "/swapfile"
+    size: "2048"

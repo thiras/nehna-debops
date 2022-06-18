@@ -1,0 +1,7 @@
+redis_server__host_configuration:
+
+  - name: 'main'
+    options:
+
+      - 'maxmemory': '128mb'
+      - 'maxmemory-policy': 'allkeys-lfu'

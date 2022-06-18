@@ -1,0 +1,9 @@
+pki_ca_name_constraints: False
+
+pki_acme_default_subdomains: ["www"]
+
+pki_realms:
+  - name: "nehna.org"
+    acme_subdomains:
+      - "www"
+      - "page"
