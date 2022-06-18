@@ -18,7 +18,7 @@
 #sagan ansible_host=sagan ansible_connection=local
 page ansible_host=164.90.168.75 ansible_connection=ssh
 
-[debops_service_system_users]
+[debops_service_users]
 page
 
 [debops_service_fail2ban]
@@ -49,7 +49,4 @@ page
 page
 
 [debops_service_wpcli]
-page
-
-[debops_service_docker_server]
 page
