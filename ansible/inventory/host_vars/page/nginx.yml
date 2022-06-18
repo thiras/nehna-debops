@@ -14,7 +14,8 @@ nginx__upstreams:
 
 nginx__servers:
   - name: ["nehna.org", "www.nehna.org"]
-    acme: True
+    acme: False
+    ssl: True
     redirect_from: True
     type: php
     php_upstream: "nehna_upstream"
